@@ -180,11 +180,37 @@
         }
 
         bindForms();
+        bindSidebarLinks();
 
         var panelElement = document.querySelector('#kanext-task-drawer');
         if (panelElement) {
             panelElement.scrollTop = 0;
         }
+    }
+
+    // Sidebar navigation links (Summary, Activity stream, Transitions,
+    // Analytics, Time tracking) would navigate away from the board and
+    // close the drawer; open them in the core modal instead, like the
+    // Actions menu items do
+    function bindSidebarLinks() {
+        var links = document.querySelectorAll('#kanext-task-drawer .sidebar a[href]');
+
+        for (var i = 0; i < links.length; i++) {
+            if (/(^|\s)js-modal/.test(links[i].className)) {
+                continue; // already handled by the core modal component
+            }
+
+            links[i].addEventListener('click', onSidebarLinkClick, false);
+        }
+    }
+
+    function onSidebarLinkClick(e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) {
+            return; // let the browser open the link in a new tab/window
+        }
+
+        e.preventDefault();
+        KB.modal.open(this.getAttribute('href'), 'large', true);
     }
 
     function bindForms() {
