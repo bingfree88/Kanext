@@ -5,6 +5,7 @@
     }
 
     var currentUrl = null;
+    var loadSequence = 0;
     var onDocumentKeydown = null;
 
     function buildDrawerUrl(taskId) {
@@ -34,9 +35,18 @@
 
         var anchorElement = KB.dom(e.target).parent('a');
         if (anchorElement) {
-            if (e.metaKey || e.ctrlKey || e.shiftKey) {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
                 return; // let the browser open the link in a new tab/window
             }
+
+            // Modal links inside the card (edit icon, category name) are also
+            // matched by the core ".js-modal-*" KB.onClick entry: KB.listen
+            // runs every matching selector for one click, so the only way to
+            // avoid drawer + modal opening together is to step aside here
+            if (/(^|\s)js-modal/.test(anchorElement.className)) {
+                return;
+            }
+
             e.preventDefault();
         }
 
@@ -58,6 +68,11 @@
         }
 
         document.body.classList.add('kanext-drawer-open');
+        // compensate the scrollbar that disappears with the locked overflow
+        var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = scrollbarWidth + 'px';
+        }
 
         if (onDocumentKeydown === null) {
             onDocumentKeydown = function (e) {
@@ -119,10 +134,16 @@
     }
 
     function loadContent(url) {
+        var sequence = ++loadSequence;
+
         setContent('<div class="kanext-drawer-loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>');
 
         KB.http.get(url)
             .success(function (response) {
+                if (sequence !== loadSequence || ! KB.exists('#kanext-task-drawer')) {
+                    return; // stale response or the drawer was closed meanwhile
+                }
+
                 if (isTaskFragment(response)) {
                     setContent(response);
                 } else {
@@ -132,6 +153,10 @@
                 }
             })
             .error(function (response) {
+                if (sequence !== loadSequence) {
+                    return;
+                }
+
                 closeDrawer();
 
                 if (response && typeof response === 'object' && response.message) {
@@ -141,6 +166,10 @@
                 }
             })
             .authError(function () {
+                if (sequence !== loadSequence) {
+                    return;
+                }
+
                 closeDrawer();
             });
     }
@@ -179,6 +208,13 @@
             KB.trigger('subtasks.reloaded');
         }
 
+        // the drawer has its own context; the project header would bring a
+        // search form and duplicate ids conflicting with the board page
+        var headerElement = document.querySelector('#kanext-task-drawer .project-header');
+        if (headerElement) {
+            headerElement.remove();
+        }
+
         bindForms();
         bindSidebarLinks();
 
@@ -205,7 +241,7 @@
     }
 
     function onSidebarLinkClick(e) {
-        if (e.metaKey || e.ctrlKey || e.shiftKey) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
             return; // let the browser open the link in a new tab/window
         }
 
@@ -217,6 +253,12 @@
         var forms = document.querySelectorAll('#kanext-drawer-content form:not(.js-modal-ignore-form)');
 
         for (var i = 0; i < forms.length; i++) {
+            // never intercept search/filter forms: their action is a GET and
+            // posting it would replace the drawer content with a task list
+            if ((forms[i].getAttribute('method') || 'get').toLowerCase() !== 'post') {
+                continue;
+            }
+
             forms[i].addEventListener('submit', onFormSubmit, false);
         }
     }
@@ -246,7 +288,16 @@
                     refreshContent();
                 }
             } else if (request.readyState === XMLHttpRequest.DONE) {
-                window.alert('Unable to save this form.');
+                var message = 'Unable to save this form.';
+
+                try {
+                    var data = JSON.parse(request.responseText);
+                    if (data && data.message) {
+                        message = data.message;
+                    }
+                } catch (exception) {}
+
+                window.alert(message);
             }
         };
         request.send(new FormData(form));
@@ -260,7 +311,9 @@
         }
 
         document.body.classList.remove('kanext-drawer-open');
+        document.body.style.paddingRight = '';
         currentUrl = null;
+        loadSequence++; // invalidate responses still in flight
 
         if (onDocumentKeydown !== null) {
             document.removeEventListener('keydown', onDocumentKeydown, true);

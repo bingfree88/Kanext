@@ -27,7 +27,7 @@ body.kanext-drawer-open #tooltip-container {
     top: 0;
     right: 0;
     bottom: 0;
-    width: min(70vw, 1400px);
+    width: clamp(560px, 70vw, 1400px);
     z-index: 60;
     overflow-y: auto;
     background: var(--body-background-color, #fff);
@@ -45,14 +45,17 @@ body.kanext-drawer-open #tooltip-container {
     position: sticky;
     top: 0;
     z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     height: 36px;
     background: var(--body-background-color, #fff);
     border-bottom: 1px solid var(--color-lighter, #dedede)
 }
 
 #kanext-drawer-close {
-    float: right;
-    padding: 8px 14px;
+    padding: 0 14px;
+    line-height: 36px;
     font-size: 1.3em;
     color: var(--color-light, #777);
     text-decoration: none;
@@ -94,7 +97,7 @@ body.kanext-drawer-open #tooltip-container {
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 920px) {
     #kanext-task-drawer {
         width: 100vw;
         box-shadow: none

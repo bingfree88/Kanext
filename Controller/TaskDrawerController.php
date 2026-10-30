@@ -50,7 +50,7 @@ class TaskDrawerController extends BaseController
             $html = $this->template->render('task/layout', $params);
 
             // the board page already has a <section id="main">, keep ids unique
-            $this->response->html(preg_replace('/id="main"/', 'id="kanext-drawer-main"', $html, 1));
+            $this->response->html(preg_replace('/id="main"/', 'id="kanext-drawer-main"', $html, 1) ?? $html);
         } else {
             $this->response->html($this->helper->layout->task('task/show', $params));
         }
