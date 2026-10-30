@@ -47,7 +47,10 @@ class TaskDrawerController extends BaseController
             $params['content_for_sublayout'] = $this->template->render('task/show', $params);
             $params['sidebar_template'] = 'task/sidebar';
 
-            $this->response->html($this->template->render('task/layout', $params));
+            $html = $this->template->render('task/layout', $params);
+
+            // the board page already has a <section id="main">, keep ids unique
+            $this->response->html(preg_replace('/id="main"/', 'id="kanext-drawer-main"', $html, 1));
         } else {
             $this->response->html($this->helper->layout->task('task/show', $params));
         }

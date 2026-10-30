@@ -12,9 +12,9 @@
     }
 
     function isTaskFragment(html) {
-        // The core "page not found" fragment is wrapped in <section id="main">,
-        // the task/show fragment is not
-        return typeof html === 'string' && html.length > 0 && html.indexOf('id="main"') === -1;
+        // the core "page not found" fragment has no #task-view,
+        // the task layout fragment always has it
+        return typeof html === 'string' && html.indexOf('id="task-view"') !== -1;
     }
 
     function onCardClick(e) {
