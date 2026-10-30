@@ -27,7 +27,7 @@ body.kanext-drawer-open #tooltip-container {
     top: 0;
     right: 0;
     bottom: 0;
-    width: min(1080px, 95vw);
+    width: min(70vw, 1400px);
     z-index: 60;
     overflow-y: auto;
     background: var(--body-background-color, #fff);
