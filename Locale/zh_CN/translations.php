@@ -15,6 +15,8 @@ return [
     'Close modal on overlay click' => '单击叠加时关闭模式',
     'Toggle sidebar' => '切换侧边栏',
     'Limit number of tasks in a board' => '限制看板中的任务数量',
+    'Open task details in a drawer' => '在抽屉中打开任务详情',
+    'On the board, clicking a task opens its details in a side drawer instead of navigating to the task page.' => '在看板中点击任务时，在侧边抽屉中打开任务详情，而不是跳转到任务页面。',
     'How many items to show in the feeds' => 'Feed 中显示多少个项目',
     'A very high number will break the interface and also might affect your server\'s resources. Recommended value: 15 items' => '非常高的数字会破坏接口，也可能会影响服务器的资源。推荐值：15 项',
     'Show comments separately' => '单独显示评论',

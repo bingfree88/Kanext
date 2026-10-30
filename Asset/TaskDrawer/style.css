@@ -1,0 +1,96 @@
+/* Kanext task drawer
+   Layering (see core css): board < drawer(50/60) < modal overlay(100) <
+   body-level dropdowns/selects(1000) < flash messages(9999) */
+
+body.kanext-drawer-open {
+    overflow: hidden;
+}
+
+/* tooltips have no z-index and would be trapped under the panel */
+body.kanext-drawer-open #tooltip-container {
+    z-index: 80;
+}
+
+#kanext-task-drawer-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.4);
+    animation: kanext-drawer-fade-in 0.15s ease-out
+}
+
+#kanext-task-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(640px, 92vw);
+    z-index: 60;
+    overflow-y: auto;
+    background: var(--body-background-color, #fff);
+    box-shadow: -3px 0 15px rgba(0, 0, 0, 0.25);
+    animation: kanext-drawer-slide-in 0.2s ease-out
+}
+
+#kanext-drawer-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: 36px;
+    background: var(--body-background-color, #fff);
+    border-bottom: 1px solid var(--color-lighter, #dedede)
+}
+
+#kanext-drawer-close {
+    float: right;
+    padding: 8px 14px;
+    font-size: 1.3em;
+    color: var(--color-light, #777);
+    text-decoration: none;
+    border: none
+}
+
+#kanext-drawer-close:hover,
+#kanext-drawer-close:focus {
+    color: var(--color-dark, #000);
+    text-decoration: none;
+    border: none
+}
+
+#kanext-drawer-content {
+    padding: 5px 20px 20px
+}
+
+.kanext-drawer-loading {
+    padding: 60px 0;
+    text-align: center;
+    color: var(--color-light, #777)
+}
+
+@keyframes kanext-drawer-slide-in {
+    from {
+        transform: translateX(100%)
+    }
+    to {
+        transform: translateX(0)
+    }
+}
+
+@keyframes kanext-drawer-fade-in {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@media (max-width: 700px) {
+    #kanext-task-drawer {
+        width: 100vw;
+        box-shadow: none
+    }
+}

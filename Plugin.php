@@ -40,6 +40,12 @@ class Plugin extends Base
             $this->hook->on('template:layout:css', ['template' => 'plugins/Kanext/Asset/ToggleSidebar/style.css']);
         }
 
+        // Task details drawer on the board
+        if ('1' === $this->configModel->get('kanext_feature_task_drawer')) {
+            $this->hook->on('template:layout:js', ['template' => 'plugins/Kanext/Asset/TaskDrawer/script.js']);
+            $this->hook->on('template:layout:css', ['template' => 'plugins/Kanext/Asset/TaskDrawer/style.css']);
+        }
+
         // Custom dashboard
         if ('1' === $this->configModel->get('kanext_feature_kanext_dashboard')) {
             $this->hook->on('template:layout:js', ['template' => 'plugins/Kanext/Asset/KanextDashboard/script.js']);

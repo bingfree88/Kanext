@@ -136,6 +136,15 @@ class ConfigHelper extends Base
                 'options' => [],
                 'enabled' => true,
             ],
+            'kanext_feature_task_drawer' => [
+                'title' => t('Open task details in a drawer', 'kanext'),
+                'description' => t('On the board, clicking a task opens its details in a side drawer instead of navigating to the task page.', 'kanext'),
+                'default_value' => '1',
+                'type' => 'checkbox',
+                'group' => 'features',
+                'options' => [],
+                'enabled' => true,
+            ],
 
             // Custom dashboard options
             'kanext_feature_kanext_dashboard_project_limit' => [
