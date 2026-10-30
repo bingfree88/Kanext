@@ -8,32 +8,48 @@
   );
   var backDropElement = $('<div class="sidebar-content-overlay"></div>');
 
-  var isSidebarElementVisible = false;
+  // Expanded by default on desktop; drawer (collapsed) below 768px
+  var desktopQuery = window.matchMedia('(min-width: 769px)');
+  var isSidebarElementVisible = desktopQuery.matches;
 
-  var toggleFn = function () {
-    isSidebarElementVisible = !isSidebarElementVisible;
-
-    if (isSidebarElementVisible === false) {
-      sidebarElement.hide();
+  var apply = function () {
+    if (isSidebarElementVisible) {
+      bodyElement.addClass('toggle-sidebar--visible');
+      sidebarElement.show();
       backDropElement.hide();
-
-      bodyElement.removeClass('toggle-sidebar--visible');
 
       return;
     }
 
-    bodyElement.addClass('toggle-sidebar--visible');
+    bodyElement.removeClass('toggle-sidebar--visible');
+    sidebarElement.hide();
+    backDropElement.hide();
+  };
 
-    sidebarElement.show();
-    backDropElement.show();
+  var toggleFn = function () {
+    isSidebarElementVisible = !isSidebarElementVisible;
+    apply();
   };
 
   if (sidebarContentElement.length) {
     toggleSidebarBtn.click(toggleFn);
-    sidebarElement.click(toggleFn);
     backDropElement.click(toggleFn);
+
+    // In drawer mode (small screens) tapping inside the sidebar closes it;
+    // on the desktop the expanded sidebar must stay open while in use.
+    sidebarElement.click(function () {
+      if (!desktopQuery.matches) {
+        toggleFn();
+      }
+    });
 
     sidebarContentElement.prepend(toggleSidebarBtn);
     bodyElement.append(backDropElement);
+
+    if (isSidebarElementVisible) {
+      bodyElement.addClass('toggle-sidebar--visible');
+    } else {
+      sidebarElement.hide();
+    }
   }
 })();

@@ -2,8 +2,17 @@ html {
   position: relative;
 }
 
-.sidebar {
-  display: none;
+/* Sidebar expanded by default on desktop; collapsed drawer below 768px */
+@media (min-width: 769px) {
+  .sidebar {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }
 
 .sidebar-content {
